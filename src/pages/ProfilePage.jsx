@@ -2,11 +2,10 @@ import { useState } from 'react';
 import { 
   User, Mail, Phone, MapPin, Target, Zap, Star, 
   CheckCircle, Briefcase, GraduationCap, Award, 
-  FileText, ChevronRight, LogOut, Settings, Home, 
-  Search, Building, MessageSquare, Bell, Pencil, Share, Save, X, Plus, Camera, LayoutGrid
+  FileText, ChevronRight, Bell, Pencil, Save, X, Plus
 } from 'lucide-react';
 
-export default function ProfilePage({ userData, setUserData, onLogout }) {
+export default function ProfilePage({ userData, setUserData, onChangeView }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [tempData, setTempData] = useState(userData);
   const [newSkill, setNewSkill] = useState('');
@@ -30,85 +29,31 @@ export default function ProfilePage({ userData, setUserData, onLogout }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex font-sans text-slate-900 animate-in fade-in duration-700">
+    <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 animate-in fade-in duration-700 pb-20">
       
-      {/* 1. SIDEBAR*/}
-      <aside className="hidden lg:flex w-72 bg-[#0D1F3D] flex-col justify-between p-8 sticky top-0 h-screen border-r border-white/5">
-        <div className="space-y-10">
-          <div className="flex items-center gap-3 px-2">
-            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/30">
-              <Briefcase size={22} className="text-white" strokeWidth={2.5} />
-            </div>
-            <span className="text-2xl font-black text-white tracking-tighter">JobMatch</span>
-          </div>
-
-          <nav className="space-y-2">
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4 ml-4">Navegação</p>
-            {[
-              { icon: <LayoutGrid size={20} />, label: "Dashboard" },
-              { icon: <Search size={20} />, label: "Vagas" },
-              { icon: <Building size={20} />, label: "Empresas" },
-              { icon: <MessageSquare size={20} />, label: "Mensagens" },
-              { icon: <User size={20} />, label: "Meu Perfil", active: true },
-            ].map((item, i) => (
-              <button 
-                key={i} 
-                className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all cursor-pointer group ${
-                  item.active ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/20' : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                {item.icon} {item.label}
-              </button>
-            ))}
-          </nav>
-        </div>
-
-        <div className="space-y-6">
-          <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
-            <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Suporte</p>
-            <p className="text-xs text-slate-300 mt-2 leading-relaxed">Dúvidas sobre o JobMatch? Entre em contato com nossa equipe UNIFOR.</p>
-          </div>
-          <button onClick={onLogout} className="w-full flex items-center gap-4 px-4 py-3 text-slate-500 font-bold text-sm hover:text-red-400 transition-all cursor-pointer group">
-            <LogOut size={20} className="group-hover:-translate-x-1 transition-transform" /> Sair da Conta
-          </button>
-        </div>
-      </aside>
-
-      {/* 2. CONTEÚDO PRINCIPAL */}
-      <main className="flex-1 lg:max-h-screen lg:overflow-y-auto">
+      {/* CONTEÚDO PRINCIPAL (Agora sem Sidebar e sem a barra branca superior) */}
+      <main className="w-full">
         
-        {/* Barra de Topo Superior */}
-        <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
-            Portal / <span className="text-slate-800 font-black">Meu Perfil Profissional</span>
-          </div>
-          <div className="flex items-center gap-6">
-            <div className="relative cursor-pointer text-slate-400 hover:text-blue-600 transition-colors">
-              <Bell size={20} />
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></div>
-            </div>
-            <div className="w-px h-6 bg-slate-200"></div>
-            <button 
-              onClick={() => {setTempData(userData); setIsEditModalOpen(true);}} 
-              className="bg-[#0D1F3D] text-white px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-900/20 cursor-pointer flex items-center gap-2"
-            >
-              <Pencil size={14}/> Editar Perfil
-            </button>
-          </div>
-        </header>
-
-        <div className="p-8 max-w-6xl mx-auto space-y-8">
+        <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-8">
           
-          {/* Card de Identidade*/}
+          {/* Card de Identidade - Botão 'Editar' movido para dentro dele */}
           <div className="bg-[#0D1F3D] rounded-[48px] p-10 md:p-14 text-white relative overflow-hidden shadow-2xl">
             <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-blue-500/10 to-transparent"></div>
             
+            {/* BOTÃO EDITAR INTEGRADO (Fica no canto superior direito do card azul) */}
+            <button 
+              onClick={() => {setTempData(userData); setIsEditModalOpen(true);}} 
+              className="absolute top-6 right-6 md:top-10 md:right-10 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-5 py-2.5 rounded-2xl font-bold text-[10px] uppercase tracking-widest transition-all backdrop-blur-md flex items-center gap-2 cursor-pointer z-20"
+            >
+              <Pencil size={14}/> Editar Perfil
+            </button>
+
             <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12">
               <div className="relative group">
                 <div className="w-44 h-44 bg-white/5 rounded-[45px] backdrop-blur-xl border border-white/10 flex items-center justify-center p-2">
-                   <div className="w-full h-full bg-slate-800 rounded-[38px] flex items-center justify-center overflow-hidden">
-                      <User size={90} className="text-slate-600 mt-6" />
-                   </div>
+                    <div className="w-full h-full bg-slate-800 rounded-[38px] flex items-center justify-center overflow-hidden">
+                       <User size={90} className="text-slate-600 mt-6" />
+                    </div>
                 </div>
                 <div className="absolute -bottom-2 -right-2 bg-blue-500 p-3 rounded-2xl border-4 border-[#0D1F3D] shadow-xl">
                   <Star size={20} className="fill-white" />
@@ -235,7 +180,6 @@ export default function ProfilePage({ userData, setUserData, onLogout }) {
               </div>
 
               <div className="p-10 space-y-10">
-                {/* Inputs Básicos */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Nome Completo</label>
@@ -247,7 +191,6 @@ export default function ProfilePage({ userData, setUserData, onLogout }) {
                   </div>
                 </div>
 
-                {/* Contato e Localização */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Telefone (WhatsApp)</label>
@@ -259,13 +202,11 @@ export default function ProfilePage({ userData, setUserData, onLogout }) {
                   </div>
                 </div>
 
-                {/* Biografia */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Sobre Mim</label>
                   <textarea rows="4" className="w-full bg-slate-50 border border-slate-200 rounded-[30px] p-6 text-sm outline-none focus:border-blue-500 focus:bg-white transition-all" value={tempData.sobre} onChange={e => setTempData({...tempData, sobre: e.target.value})} placeholder="Fale sobre sua experiência profissional..." />
                 </div>
 
-                {/* Habilidades */}
                 <div className="space-y-4">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Hard Skills</label>
                   <form onSubmit={addSkill} className="flex gap-3">
@@ -283,7 +224,6 @@ export default function ProfilePage({ userData, setUserData, onLogout }) {
                 </div>
               </div>
 
-              {/* Botões do Modal */}
               <div className="p-10 border-t border-slate-100 bg-slate-50/50 flex flex-col md:flex-row gap-4 sticky bottom-0">
                 <button onClick={() => setIsEditModalOpen(false)} className="flex-1 py-4 text-slate-400 font-bold uppercase tracking-widest hover:bg-white rounded-2xl transition-all cursor-pointer">Descartar</button>
                 <button onClick={handleSave} className="flex-[2] bg-[#0D1F3D] text-white py-4 rounded-2xl font-black text-sm uppercase tracking-[0.2em] shadow-2xl hover:bg-blue-600 transition-all cursor-pointer flex items-center justify-center gap-3">
