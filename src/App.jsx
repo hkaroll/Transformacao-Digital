@@ -4,12 +4,14 @@ import ProfilePage from './pages/ProfilePage';
 import MessagesPage from './pages/MessagesPage';
 import CompaniesPage from './pages/CompaniesPage';
 import CompanyProfilePage from './pages/CompanyProfilePage';
+import JobsPage from './pages/JobsPage'; // <--- Importação da nova página de Vagas
 import Navbar from './components/Navbar';
 
 export default function App() {
   const [view, setView] = useState('login');
   const [selectedCompany, setSelectedCompany] = useState(null); 
   
+  // Dados do usuário logado (conectado ao seu perfil)
   const [user, setUser] = useState({
     nome: 'Karoll Reis',
     email: 'karoll@dev.com',
@@ -27,7 +29,8 @@ export default function App() {
 
   return (
     <main className="min-h-screen bg-[#F8FAFC]">
-      {/* Navbar Global */}
+      
+      {/* NAVBAR GLOBAL (Aparece em todas as telas pós-login) */}
       {view !== 'login' && (
         <Navbar 
           activeView={view} 
@@ -37,17 +40,25 @@ export default function App() {
         />
       )}
 
+      {/* RENDERIZAÇÃO CONDICIONAL DAS TELAS */}
       <div className="animate-in fade-in duration-500">
-        {view === 'login' && <AuthPage onLoginSuccess={handleLoginSuccess} />}
+        
+        {/* 1. TELA DE LOGIN / CADASTRO */}
+        {view === 'login' && (
+          <AuthPage onLoginSuccess={handleLoginSuccess} />
+        )}
 
-        {/* Home / Perfil */}
+        {/* 2. HOME / PERFIL DO USUÁRIO */}
         {(view === 'profile' || view === 'home') && (
           <ProfilePage userData={user} setUserData={setUser} onChangeView={setView} />
         )}
 
-        {view === 'messages' && <MessagesPage userData={user} onChangeView={setView} />}
+        {/* 3. PÁGINA DE MENSAGENS / CHAT */}
+        {view === 'messages' && (
+          <MessagesPage userData={user} onChangeView={setView} />
+        )}
 
-        {/* LISTA DE EMPRESAS */}
+        {/* 4. LISTA DE EMPRESAS PARCEIRAS */}
         {view === 'empresas' && (
           <CompaniesPage onSelectCompany={(company) => {
             setSelectedCompany(company);
@@ -55,27 +66,19 @@ export default function App() {
           }} />
         )}
 
-        {/* PERFIL DA EMPRESA (Voltando ao original) */}
-        {view === 'company-profile' && (
+        {/* 5. PERFIL DA EMPRESA SELECIONADA (Versão estável e limpa) */}
+        {view === 'company-profile' && selectedCompany && (
           <CompanyProfilePage 
             company={selectedCompany} 
             onBack={() => setView('empresas')} 
           />
         )}
 
-        {/* TELA DE VAGAS (Voltando ao placeholder original) */}
+        {/* 6. PÁGINA DE VAGAS (Totalmente funcional com busca e filtros) */}
         {view === 'vagas' && (
-          <div className="flex flex-col items-center justify-center py-32 text-slate-400 text-center">
-            <h2 className="text-2xl font-black uppercase tracking-widest text-slate-800">Página de Vagas</h2>
-            <p className="font-medium mt-2">Em desenvolvimento pelo grupo UNIFOR...</p>
-            <button 
-              onClick={() => setView('profile')}
-              className="mt-6 text-blue-600 font-bold hover:underline cursor-pointer"
-            >
-              Voltar para a Home
-            </button>
-          </div>
+          <JobsPage />
         )}
+
       </div>
     </main>
   );
