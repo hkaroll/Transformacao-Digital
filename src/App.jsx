@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import AuthPage from './pages/AuthPage';
+import HomePage from './pages/HomePage'; 
 import ProfilePage from './pages/ProfilePage';
 import MessagesPage from './pages/MessagesPage';
 import CompaniesPage from './pages/CompaniesPage';
 import CompanyProfilePage from './pages/CompanyProfilePage';
-import JobsPage from './pages/JobsPage'; // <--- Importação da nova página de Vagas
+import JobsPage from './pages/JobsPage'; 
 import Navbar from './components/Navbar';
 
 export default function App() {
   const [view, setView] = useState('login');
   const [selectedCompany, setSelectedCompany] = useState(null); 
   
-  // Dados do usuário logado (conectado ao seu perfil)
   const [user, setUser] = useState({
     nome: 'Karoll Reis',
     email: 'karoll@dev.com',
@@ -24,13 +24,12 @@ export default function App() {
 
   const handleLoginSuccess = (loginData) => {
     setUser((prev) => ({ ...prev, ...loginData }));
-    setView('profile');
+    setView('home'); 
   };
 
   return (
     <main className="min-h-screen bg-[#F8FAFC]">
-      
-      {/* NAVBAR GLOBAL (Aparece em todas as telas pós-login) */}
+      {/* Navbar Global (Não aparece na tela de login) */}
       {view !== 'login' && (
         <Navbar 
           activeView={view} 
@@ -40,25 +39,24 @@ export default function App() {
         />
       )}
 
-      {/* RENDERIZAÇÃO CONDICIONAL DAS TELAS */}
       <div className="animate-in fade-in duration-500">
-        
-        {/* 1. TELA DE LOGIN / CADASTRO */}
-        {view === 'login' && (
-          <AuthPage onLoginSuccess={handleLoginSuccess} />
+        {/* TELA DE AUTENTICAÇÃO */}
+        {view === 'login' && <AuthPage onLoginSuccess={handleLoginSuccess} />}
+
+        {/* SEPARADO: APENAS A HOME */}
+        {view === 'home' && (
+        <HomePage userName={user.nome} onChangeView={setView} />
         )}
 
-        {/* 2. HOME / PERFIL DO USUÁRIO */}
-        {(view === 'profile' || view === 'home') && (
+        {/* SEPARADO: APENAS O PERFIL DO USUÁRIO */}
+        {view === 'profile' && (
           <ProfilePage userData={user} setUserData={setUser} onChangeView={setView} />
         )}
 
-        {/* 3. PÁGINA DE MENSAGENS / CHAT */}
-        {view === 'messages' && (
-          <MessagesPage userData={user} onChangeView={setView} />
-        )}
+        {/* MENSAGENS / CHAT */}
+        {view === 'messages' && <MessagesPage userData={user} onChangeView={setView} />}
 
-        {/* 4. LISTA DE EMPRESAS PARCEIRAS */}
+        {/* LISTA DE EMPRESAS */}
         {view === 'empresas' && (
           <CompaniesPage onSelectCompany={(company) => {
             setSelectedCompany(company);
@@ -66,19 +64,18 @@ export default function App() {
           }} />
         )}
 
-        {/* 5. PERFIL DA EMPRESA SELECIONADA (Versão estável e limpa) */}
-        {view === 'company-profile' && selectedCompany && (
+        {/* PERFIL DA EMPRESA SELECIONADA */}
+        {view === 'company-profile' && (
           <CompanyProfilePage 
             company={selectedCompany} 
             onBack={() => setView('empresas')} 
           />
         )}
 
-        {/* 6. PÁGINA DE VAGAS (Totalmente funcional com busca e filtros) */}
+        {/* PÁGINA DE VAGAS */}
         {view === 'vagas' && (
           <JobsPage />
         )}
-
       </div>
     </main>
   );
