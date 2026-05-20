@@ -29,7 +29,6 @@ export default function App() {
 
   return (
     <main className="min-h-screen bg-[#F8FAFC]">
-      {/* Navbar Global (Não aparece na tela de login) */}
       {view !== 'login' && (
         <Navbar 
           activeView={view} 
@@ -40,10 +39,8 @@ export default function App() {
       )}
 
       <div className="animate-in fade-in duration-500">
-        {/* TELA DE AUTENTICAÇÃO */}
         {view === 'login' && <AuthPage onLoginSuccess={handleLoginSuccess} />}
 
-        {/* SEPARADO: APENAS A HOME */}
         {view === 'home' && (
         <HomePage userName={user.nome} onChangeView={setView} />
         )}

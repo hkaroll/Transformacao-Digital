@@ -8,7 +8,6 @@ export default function CompaniesPage({ onSelectCompany }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('Todas');
 
-  // Dados das Empresas
   const companies = [
     {
       id: 1,
@@ -74,7 +73,6 @@ export default function CompaniesPage({ onSelectCompany }) {
 
   const categories = ["Todas", "Tecnologia", "Design & Marketing", "Finanças"];
 
-  // Filtro de busca e categoria
   const filteredCompanies = companies.filter(company => {
     const matchesSearch = company.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filter === 'Todas' || company.sector === filter;
@@ -86,7 +84,6 @@ export default function CompaniesPage({ onSelectCompany }) {
       
       <main className="max-w-7xl mx-auto p-4 md:p-10 space-y-8">
         
-        {/* CABEÇALHO E PESQUISA */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-2">
             <h1 className="text-4xl font-black tracking-tighter text-slate-800">Explorar Empresas</h1>
@@ -105,7 +102,6 @@ export default function CompaniesPage({ onSelectCompany }) {
           </div>
         </div>
 
-        {/* FILTROS DE CATEGORIA */}
         <div className="flex flex-wrap gap-2">
           {categories.map((cat) => (
             <button
@@ -122,20 +118,17 @@ export default function CompaniesPage({ onSelectCompany }) {
           ))}
         </div>
 
-        {/* GRID DE EMPRESAS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredCompanies.map((company) => (
             <div 
               key={company.id} 
               className="bg-white border border-slate-200 rounded-[32px] p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group relative overflow-hidden"
             >
-              {/* Badge de Avaliação */}
               <div className="absolute top-6 right-6 flex items-center gap-1 bg-amber-50 text-amber-600 px-3 py-1 rounded-lg">
                 <Star size={14} className="fill-amber-600" />
                 <span className="text-xs font-black">{company.rating}</span>
               </div>
 
-              {/* Logo / Iniciais */}
               <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 font-black text-xl mb-6 border border-blue-100">
                 {company.initials}
               </div>
@@ -155,7 +148,6 @@ export default function CompaniesPage({ onSelectCompany }) {
                   {company.description}
                 </p>
 
-                {/* Info Pills */}
                 <div className="pt-4 border-t border-slate-50 space-y-3">
                   <div className="flex items-center gap-3 text-slate-400 text-xs font-semibold">
                     <MapPin size={16} className="text-slate-300" /> {company.location}
@@ -165,7 +157,6 @@ export default function CompaniesPage({ onSelectCompany }) {
                   </div>
                 </div>
 
-                {/* BOTÃO DE AÇÃO */}
                 <button 
                   onClick={() => onSelectCompany(company)}
                   className="w-full mt-4 bg-slate-50 group-hover:bg-[#0D1F3D] group-hover:text-white text-slate-600 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 cursor-pointer"
@@ -176,7 +167,6 @@ export default function CompaniesPage({ onSelectCompany }) {
             </div>
           ))}
 
-          {/* Caso não encontre nada */}
           {filteredCompanies.length === 0 && (
             <div className="col-span-full py-20 text-center">
               <Building size={48} className="mx-auto text-slate-200 mb-4" />

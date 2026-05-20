@@ -8,7 +8,6 @@ export default function MessagesPage({ userData }) {
   const [activeChat, setActiveChat] = useState(1);
   const [messageText, setMessageText] = useState('');
 
-  // 1. Dados das conversas com as mensagens individuais de cada uma
   const [conversations] = useState([
     {
       id: 1,
@@ -51,7 +50,6 @@ export default function MessagesPage({ userData }) {
     }
   ]);
 
-  // 2. Encontra os dados da conversa que está clicada no momento
   const currentChat = conversations.find(c => c.id === activeChat);
 
   return (
@@ -59,7 +57,6 @@ export default function MessagesPage({ userData }) {
       
       <div className="flex flex-1 w-full bg-white overflow-hidden">
         
-        {/* COLUNA ESQUERDA: LISTA DE CONVERSAS */}
         <section className="w-80 md:w-96 border-r border-slate-200 flex flex-col shrink-0 bg-white">
           <div className="p-6 border-b border-slate-50">
             <h2 className="text-xl font-bold text-slate-800 mb-4 tracking-tight">Mensagens</h2>
@@ -109,11 +106,9 @@ export default function MessagesPage({ userData }) {
           </div>
         </section>
 
-        {/* COLUNA DIREITA: JANELA DE CHAT DINÂMICA */}
         <section className="flex-1 bg-slate-50 flex flex-col relative">
           {currentChat ? (
             <>
-              {/* Header Dinâmico */}
               <header className="p-4 bg-white border-b border-slate-200 flex justify-between items-center shadow-sm z-10">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 font-bold text-xs">
@@ -136,7 +131,6 @@ export default function MessagesPage({ userData }) {
                 </button>
               </header>
 
-              {/* Área de Mensagens que muda conforme o clique */}
               <div className="flex-1 p-6 md:p-10 overflow-y-auto space-y-6">
                 {currentChat.chatHistory.map((msg) => (
                   <div key={msg.id} className={`flex gap-3 max-w-xl ${msg.sender === 'me' ? 'ml-auto flex-row-reverse' : ''}`}>
@@ -162,7 +156,6 @@ export default function MessagesPage({ userData }) {
                 ))}
               </div>
 
-              {/* Input de Mensagem */}
               <div className="p-6 bg-white border-t border-slate-100">
                 <div className="max-w-4xl mx-auto flex items-center gap-3 bg-slate-50 rounded-2xl p-1.5 border border-slate-200">
                   <button className="p-2 text-slate-400 hover:text-blue-600 transition-colors cursor-pointer"><Smile size={20}/></button>

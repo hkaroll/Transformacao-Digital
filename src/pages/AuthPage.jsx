@@ -7,12 +7,11 @@ import {
 export default function AuthPage({ onLoginSuccess }) {
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState('entrar'); 
-  const [regStep, setRegStep] = useState(1); // Mantido para não quebrar os Hooks
-  const [userRole, setUserRole] = useState(null); // Mantido para não quebrar os Hooks
+  const [regStep, setRegStep] = useState(1); 
+  const [userRole, setUserRole] = useState(null); 
 
   const [formData, setFormData] = useState({ nome: '', email: '', senha: '' });
 
-  // Agora o cadastro finaliza direto aqui, sem ir para o passo 2 da Empresa
   const handleRegisterSubmit = (e) => {
     e.preventDefault();
     onLoginSuccess({ nome: formData.nome, email: formData.email });
@@ -21,7 +20,6 @@ export default function AuthPage({ onLoginSuccess }) {
   return (
     <div className="min-h-screen bg-white flex flex-col md:flex-row font-sans overflow-hidden">
       
-      {/* LADO ESQUERDO: Branding (Identificado ao seu original) */}
       <section className="hidden md:flex md:w-1/2 bg-[#0D1F3D] p-12 flex-col justify-between text-white relative">
         <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
         <div className="relative z-10">
@@ -43,12 +41,10 @@ export default function AuthPage({ onLoginSuccess }) {
         </div>
       </section>
 
-      {/* LADO DIREITO: Formulário COMPACTO */}
       <section className="flex-1 flex items-center justify-center p-6 bg-slate-50">
         <div className="w-full max-w-[400px]"> 
           <div className="bg-white p-7 md:p-9 rounded-[32px] shadow-xl shadow-slate-200/60 border border-white">
-            
-            {/* Cabeçalho de Texto */}
+
             <div className="mb-6">
               <h3 className="text-2xl font-black text-slate-800 tracking-tight">
                 {activeTab === 'entrar' ? 'Acesse sua conta' : 'Crie sua conta'}
@@ -58,7 +54,6 @@ export default function AuthPage({ onLoginSuccess }) {
               </p>
             </div>
 
-            {/* Abas */}
             <nav className="flex gap-6 border-b border-slate-100 mb-8">
               {['entrar', 'cadastrar'].map((tab) => (
                 <button key={tab} type="button" onClick={() => {setActiveTab(tab);}} className={`pb-3 text-xs font-black uppercase tracking-widest transition-all relative cursor-pointer ${activeTab === tab ? 'text-blue-600' : 'text-slate-400 hover:text-slate-600'}`}>
@@ -68,7 +63,6 @@ export default function AuthPage({ onLoginSuccess }) {
             </nav>
 
             {activeTab === 'entrar' ? (
-              /* LOGIN COMPACTO (Alterado apenas de E-MAIL CORPORATIVO para E-MAIL) */
               <form className="space-y-4" onSubmit={(e) => {e.preventDefault(); onLoginSuccess({nome: "João Silva", email: "joao@gmail.com"});}}>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">E-MAIL</label>
@@ -89,7 +83,7 @@ export default function AuthPage({ onLoginSuccess }) {
                 <button className="w-full bg-[#0D1F3D] hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all mt-2 cursor-pointer text-sm">Entrar no Sistema</button>
               </form>
             ) : (
-              /* CADASTRO DIRETO SEM PASSO DE SELEÇÃO DE EMPRESA */
+
               <form onSubmit={handleRegisterSubmit} className="space-y-4">
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nome Completo</label>

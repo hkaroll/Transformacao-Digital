@@ -8,9 +8,8 @@ import {
 export default function JobsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState('Todos');
-  const [expandedJobId, setExpandedJobId] = useState(null); // Estado para controlar qual card está expandido
+  const [expandedJobId, setExpandedJobId] = useState(null); 
 
-  // Banco de dados atualizado com todas as informações detalhadas por vaga
   const baseJobs = [
     { 
       id: 1, 
@@ -122,40 +121,47 @@ export default function JobsPage() {
   });
 
   const sectors = [
-    { name: "Tecnologia", icon: <Monitor size={20} />, count: "234 vagas" },
-    { name: "Marketing", icon: <TrendingUp size={20} />, count: "187 vagas" },
-    { name: "Design", icon: <Laptop size={20} />, count: "156 vagas" },
+    { name: "Tecnologia", icon: <Monitor size={20} aria-hidden="true" />, count: "234 vagas" },
+    { name: "Marketing", icon: <TrendingUp size={20} aria-hidden="true" />, count: "187 vagas" },
+    { name: "Design", icon: <Laptop size={20} aria-hidden="true" />, count: "156 vagas" },
   ];
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-20">
-      <main className="max-w-7xl mx-auto p-4 md:p-10 space-y-10">
+      <main className="max-w-7xl mx-auto p-4 md:p-10 space-y-10" aria-label="Painel de Oportunidades">
         
-        {/* TÍTULO */}
         <div className="space-y-2">
           <h1 className="text-4xl font-black tracking-tighter text-slate-800 uppercase">Oportunidades Disponíveis</h1>
           <p className="text-slate-500 font-medium italic">Encontre a porta de entrada ideal para o mercado de trabalho.</p>
         </div>
 
-        {/* BUSCA E FILTROS */}
-        <div className="bg-white rounded-[32px] p-6 border border-slate-200 shadow-sm flex flex-col lg:flex-row gap-6 justify-between items-center">
+        <div className="bg-white rounded-[32px] p-6 border border-slate-200 shadow-sm flex flex-col lg:flex-row gap-6 justify-between items-center" role="search" aria-label="Filtros e Busca">
+          
           <div className="relative w-full lg:w-96 group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={20} />
+            <label htmlFor="job-search" className="sr-only">Pesquisar vaga por cargo ou empresa</label>
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={20} aria-hidden="true" />
             <input 
+              id="job-search"
               type="text" 
               placeholder="Pesquisar cargo ou empresa..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-blue-500 focus:bg-white transition-all font-medium text-slate-700"
+              className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-blue-500 focus:bg-white transition-all font-medium text-slate-700 focus-visible:ring-2 focus-visible:ring-blue-500"
             />
           </div>
 
-          <div className="flex flex-wrap gap-3 w-full lg:w-auto">
+          <div aria-live="polite" className="sr-only">
+            {filteredJobs.length} vagas encontradas para a listagem atual.
+          </div>
+
+          <div className="flex flex-wrap gap-3 w-full lg:w-auto" role="group" aria-label="Filtrar listagem por categoria">
             {['Todos', 'Estágio', 'Jovem Aprendiz', 'Júnior'].map((filter) => (
               <button
                 key={filter}
+                type="button"
                 onClick={() => setActiveFilter(filter)}
-                className={`px-5 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer border ${
+                aria-pressed={activeFilter === filter}
+                className={`px-5 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                   activeFilter === filter 
                     ? 'bg-[#0D1F3D] text-white border-[#0D1F3D] shadow-md' 
                     : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
@@ -167,14 +173,13 @@ export default function JobsPage() {
           </div>
         </div>
 
-        {/* SEÇÃO DE SETORES */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6" aria-label="Setores com mais contratações">
           {sectors.map((s) => (
             <div 
               key={s.name}
               className="flex items-center gap-6 p-6 rounded-[32px] border bg-white text-slate-600 border-slate-100 shadow-sm"
             >
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-slate-50 text-blue-600">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-slate-50 text-blue-600" aria-hidden="true">
                 {s.icon}
               </div>
               <div className="text-left">
@@ -185,8 +190,7 @@ export default function JobsPage() {
           ))}
         </div>
 
-        {/* LISTAGEM EM GRID (MANTIDO EXATAMENTE IGUAL) */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" role="list" aria-label="Vagas em destaque">
           {filteredJobs.length > 0 ? (
             filteredJobs.map((job) => {
               const isExpanded = expandedJobId === job.id;
@@ -194,13 +198,14 @@ export default function JobsPage() {
               return (
                 <div 
                   key={job.id} 
+                  role="listitem"
                   className="bg-white border border-slate-200 rounded-[40px] p-8 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between border-l-4 border-l-blue-500 h-fit"
                 >
                   <div>
-                    {/* Topo do Card */}
+
                     <div className="flex justify-between items-start gap-4 mb-6">
                       <div className="flex gap-4">
-                        <div className="w-16 h-16 bg-[#0D1F3D] text-white rounded-2xl flex items-center justify-center font-black text-xl uppercase shadow-md">
+                        <div className="w-16 h-16 bg-[#0D1F3D] text-white rounded-2xl flex items-center justify-center font-black text-xl uppercase shadow-md" aria-hidden="true">
                           {job.initials}
                         </div>
                         <div>
@@ -208,7 +213,7 @@ export default function JobsPage() {
                             {job.title}
                           </h3>
                           <p className="text-blue-500 text-xs font-black uppercase tracking-widest flex items-center gap-1.5 mt-1">
-                            <Building size={14} /> {job.company}
+                            <Building size={14} aria-hidden="true" /> {job.company}
                           </p>
                         </div>
                       </div>
@@ -217,37 +222,39 @@ export default function JobsPage() {
                         job.type === 'Estágio' ? 'bg-blue-50 text-blue-600' :
                         job.type === 'Jovem Aprendiz' ? 'bg-purple-50 text-purple-600' : 'bg-emerald-50 text-emerald-600'
                       }`}>
-                        {job.type}
+                        <span className="sr-only">Tipo de oportunidade:</span> {job.type}
                       </span>
                     </div>
 
-                    {/* Informações Básicas da Linha */}
                     <div className="grid grid-cols-2 gap-4 border-t border-b border-slate-50 py-4 mb-6">
                       <div className="flex items-center gap-2 text-slate-400 font-bold text-xs uppercase tracking-tighter">
-                        <MapPin size={16} className="text-slate-300" />
-                        <span className="text-slate-600 line-clamp-1">{job.location}</span>
+                        <MapPin size={16} className="text-slate-300" aria-hidden="true" />
+                        <span className="text-slate-600 line-clamp-1"><span className="sr-only">Localização:</span> {job.location}</span>
                       </div>
                       <div className="flex items-center gap-2 text-slate-400 font-bold text-xs uppercase tracking-tighter">
-                        <Clock size={16} className="text-slate-300" />
-                        <span className="text-slate-600">{job.hours}</span>
+                        <Clock size={16} className="text-slate-300" aria-hidden="true" />
+                        <span className="text-slate-600"><span className="sr-only">Carga horária:</span> {job.hours}</span>
                       </div>
                     </div>
 
-                    {/* 🛠️ CONTEÚDO EXPANSÍVEL (Adicionado dinamicamente sem quebrar o layout) */}
                     {isExpanded && (
-                      <div className="space-y-6 pt-2 pb-6 border-b border-slate-100 mb-6 animate-in fade-in duration-300">
-                        
-                        {/* Status extra pedido (Candidatos e se é Remoto) */}
+                      <div 
+                        id={`job-details-panel-${job.id}`}
+                        role="region"
+                        aria-label={`Detalhes estendidos sobre a vaga de ${job.title}`}
+                        className="space-y-6 pt-2 pb-6 border-b border-slate-100 mb-6 animate-in fade-in duration-300"
+                      >
+                        {/* Status extra */}
                         <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                           <div className="flex items-center gap-2">
-                            <Users size={16} className="text-slate-400" />
+                            <Users size={16} className="text-slate-400" aria-hidden="true" />
                             <div>
                               <p className="text-[9px] font-black text-slate-400 uppercase">Candidatos</p>
                               <p className="text-xs font-bold text-slate-700">{job.candidates}</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Laptop size={16} className="text-slate-400" />
+                            <Laptop size={16} className="text-slate-400" aria-hidden="true" />
                             <div>
                               <p className="text-[9px] font-black text-slate-400 uppercase">Modelo de Trabalho</p>
                               <p className="text-xs font-bold text-slate-700">{job.isRemote}</p>
@@ -257,21 +264,21 @@ export default function JobsPage() {
 
                         {/* Sobre a vaga */}
                         <div className="space-y-1.5">
-                          <h5 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                            <Info size={14} className="text-blue-500" /> Sobre a Vaga
-                          </h5>
+                          <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <Info size={14} className="text-blue-500" aria-hidden="true" /> Sobre a Vaga
+                          </h4>
                           <p className="text-sm text-slate-600 leading-relaxed font-medium italic">"{job.about}"</p>
                         </div>
 
                         {/* Responsabilidades */}
                         <div className="space-y-2">
-                          <h5 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                            <CheckCircle size={14} className="text-emerald-500" /> Responsabilidades
-                          </h5>
+                          <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <CheckCircle size={14} className="text-emerald-500" aria-hidden="true" /> Responsabilidades
+                          </h4>
                           <ul className="space-y-1.5 pl-1">
                             {job.responsibilities.map((resp, index) => (
                               <li key={index} className="text-xs text-slate-600 font-medium flex items-start gap-2">
-                                <span className="text-emerald-500 mt-0.5">•</span> {resp}
+                                <span className="text-emerald-500 mt-0.5" aria-hidden="true">•</span> {resp}
                               </li>
                             ))}
                           </ul>
@@ -279,13 +286,13 @@ export default function JobsPage() {
 
                         {/* Requisitos */}
                         <div className="space-y-2">
-                          <h5 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                            <Award size={14} className="text-purple-500" /> Requisitos Básicos
-                          </h5>
+                          <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <Award size={14} className="text-purple-500" aria-hidden="true" /> Requisitos Básicos
+                          </h4>
                           <ul className="space-y-1.5 pl-1">
                             {job.requirements.map((req, index) => (
                               <li key={index} className="text-xs text-slate-600 font-medium flex items-start gap-2">
-                                <span className="text-purple-500 mt-0.5">•</span> {req}
+                                <span className="text-purple-500 mt-0.5" aria-hidden="true">•</span> {req}
                               </li>
                             ))}
                           </ul>
@@ -293,12 +300,12 @@ export default function JobsPage() {
 
                         {/* Benefícios */}
                         <div className="space-y-2">
-                          <h5 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                            <Heart size={14} className="text-red-500" /> Benefícios
-                          </h5>
-                          <div className="flex flex-wrap gap-1.5">
+                          <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <Heart size={14} className="text-red-500" aria-hidden="true" /> Benefícios
+                          </h4>
+                          <div className="flex flex-wrap gap-1.5" role="list" aria-label="Lista de Benefícios">
                             {job.benefits.map((benefit, index) => (
-                              <span key={index} className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-[10px] font-bold">
+                              <span key={index} role="listitem" className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-[10px] font-bold">
                                 {benefit}
                               </span>
                             ))}
@@ -314,28 +321,31 @@ export default function JobsPage() {
                     <div className="space-y-0.5">
                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Bolsa / Salário</p>
                       <p className="text-lg font-black text-emerald-600 flex items-center gap-1">
-                        <DollarSign size={18} /> {job.sal}
+                        <DollarSign size={18} aria-hidden="true" /> <span className="sr-only">Remuneração estimada:</span> {job.sal}
                       </p>
                     </div>
                     
                     <div className="flex gap-2">
-                      {/* Botão de alternar descrição */}
                       <button 
+                        type="button"
                         onClick={() => toggleExpand(job.id)}
-                        className="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-4 rounded-2xl font-black text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                        aria-expanded={isExpanded}
+                        aria-controls={`job-details-panel-${job.id}`}
+                        className="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-4 rounded-2xl font-black text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                       >
                         {isExpanded ? (
-                          <>Ocultar <ChevronUp size={14} /></>
+                          <>Ocultar <span className="sr-only">especificações de {job.title}</span> <ChevronUp size={14} aria-hidden="true" /></>
                         ) : (
-                          <>Ver Descrição <ChevronDown size={14} /></>
+                          <>Ver Descrição <span className="sr-only">completa sobre {job.title}</span> <ChevronDown size={14} aria-hidden="true" /></>
                         )}
                       </button>
 
                       <button 
+                        type="button"
                         onClick={() => alert(`Candidatura enviada para a vaga: ${job.title}`)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.15em] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.15em] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                       >
-                        Quero a Vaga
+                        Quero a Vaga <span className="sr-only">para o cargo de {job.title} na empresa {job.company}</span>
                       </button>
                     </div>
                   </div>
@@ -344,7 +354,7 @@ export default function JobsPage() {
             })
           ) : (
             <div className="col-span-1 lg:col-span-2 bg-white rounded-[40px] p-16 border border-slate-200 text-center space-y-4">
-              <Briefcase size={48} className="mx-auto text-slate-300" />
+              <Briefcase size={48} className="mx-auto text-slate-300" aria-hidden="true" />
               <h3 className="text-xl font-black text-slate-800 uppercase">Nenhuma vaga encontrada</h3>
               <p className="text-slate-500 font-medium max-w-md mx-auto">Não encontramos oportunidades correspondentes.</p>
             </div>

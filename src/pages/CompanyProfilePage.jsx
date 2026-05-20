@@ -5,13 +5,11 @@ import {
 } from 'lucide-react';
 
 export default function CompanyProfilePage({ company, onBack }) {
-  // Caso não receba os dados da empresa (segurança)
   if (!company) return null;
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-20 animate-in slide-in-from-right duration-500">
       
-      {/* HEADER DE NAVEGAÇÃO */}
       <div className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <button 
@@ -31,7 +29,6 @@ export default function CompanyProfilePage({ company, onBack }) {
 
       <main className="max-w-7xl mx-auto p-4 md:p-10 space-y-10">
         
-        {/* BANNER PRINCIPAL (HERO) */}
         <div className="bg-[#0D1F3D] rounded-[48px] p-8 md:p-16 text-white relative overflow-hidden shadow-2xl">
           <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-500/10 to-transparent pointer-events-none"></div>
           
