@@ -1,13 +1,11 @@
 package com.jobmatch.domain.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import java.util.List;
 
 @Entity
 @Data
@@ -26,6 +24,7 @@ public class Usuario {
     private String email;
 
     @Column(nullable = false)
+    @JsonIgnore // Nunca expor a senha em respostas JSON
     private String senha;
 
     private String cargo;
@@ -37,5 +36,9 @@ public class Usuario {
     @Column(columnDefinition = "TEXT")
     private String sobre;
 
-    private String habilidades;
+    private String habilidades; // Ex: "React,Java,Spring Boot"
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Candidatura> candidaturas;
 }

@@ -1,20 +1,55 @@
 import { useState } from 'react';
 import { 
   Mail, Lock, Eye, EyeOff, Briefcase, 
-  CheckCircle2, User, Building, ChevronLeft 
+  CheckCircle2
 } from 'lucide-react';
+import { login, register } from '../services/api';
 
 export default function AuthPage({ onLoginSuccess }) {
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState('entrar'); 
-  const [regStep, setRegStep] = useState(1); 
-  const [userRole, setUserRole] = useState(null); 
+  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  
+  const [regFormData, setRegFormData] = useState({ nome: '', email: '', senha: '' });
 
-  const [formData, setFormData] = useState({ nome: '', email: '', senha: '' });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleRegisterSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    onLoginSuccess({ nome: formData.nome, email: formData.email });
+    setError(null);
+    setLoading(true);
+    try {
+      const data = await login(email, password);
+      localStorage.setItem('jwt_token', data.accessToken);
+      onLoginSuccess(); 
+    } catch (err) {
+      setError(err.message || 'Ocorreu um erro. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegisterSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      await register(regFormData);
+      const data = await login(regFormData.email, regFormData.senha);
+      localStorage.setItem('jwt_token', data.accessToken);
+      onLoginSuccess();
+    } catch (err) {
+      setError(err.message || 'Ocorreu um erro no cadastro.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegFormChange = (e) => {
+    setRegFormData({ ...regFormData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -56,52 +91,56 @@ export default function AuthPage({ onLoginSuccess }) {
 
             <nav className="flex gap-6 border-b border-slate-100 mb-8">
               {['entrar', 'cadastrar'].map((tab) => (
-                <button key={tab} type="button" onClick={() => {setActiveTab(tab);}} className={`pb-3 text-xs font-black uppercase tracking-widest transition-all relative cursor-pointer ${activeTab === tab ? 'text-blue-600' : 'text-slate-400 hover:text-slate-600'}`}>
+                <button key={tab} type="button" onClick={() => {setActiveTab(tab); setError(null);}} className={`pb-3 text-xs font-black uppercase tracking-widest transition-all relative cursor-pointer ${activeTab === tab ? 'text-blue-600' : 'text-slate-400 hover:text-slate-600'}`}>
                   {tab} {activeTab === tab && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 rounded-full"></div>}
                 </button>
               ))}
             </nav>
 
+            {error && <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative text-xs" role="alert">{error}</div>}
+
             {activeTab === 'entrar' ? (
-              <form className="space-y-4" onSubmit={(e) => {e.preventDefault(); onLoginSuccess({nome: "João Silva", email: "joao@gmail.com"});}}>
+              <form className="space-y-4" onSubmit={handleLoginSubmit}>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">E-MAIL</label>
                   <div className="relative group">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
-                    <input type="email" placeholder="exemplo@empresa.com" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-2.5 pl-11 pr-4 focus:bg-white focus:border-blue-500 outline-none transition-all text-sm" />
+                    <input type="email" placeholder="exemplo@empresa.com" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-2.5 pl-11 pr-4 focus:bg-white focus:border-blue-500 outline-none transition-all text-sm" />
                   </div>
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">SENHA</label>
                   <div className="relative group">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
-                    <input type={showPassword ? "text" : "password"} placeholder="••••••••" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-2.5 pl-11 pr-11 focus:bg-white focus:border-blue-500 outline-none transition-all text-sm" />
+                    <input type={showPassword ? "text" : "password"} placeholder="••••••••" required value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-2.5 pl-11 pr-11 focus:bg-white focus:border-blue-500 outline-none transition-all text-sm" />
                     <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-blue-600 cursor-pointer">{showPassword ? <EyeOff size={16} /> : <Eye size={16} />}</button>
                   </div>
                 </div>
                 <div className="flex justify-end"><a href="#" className="text-[11px] font-bold text-blue-600">Esqueceu a senha?</a></div>
-                <button className="w-full bg-[#0D1F3D] hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all mt-2 cursor-pointer text-sm">Entrar no Sistema</button>
+                <button type="submit" disabled={loading} className="w-full bg-[#0D1F3D] hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all mt-2 cursor-pointer text-sm disabled:opacity-50">
+                  {loading ? 'Entrando...' : 'Entrar no Sistema'}
+                </button>
               </form>
             ) : (
-
               <form onSubmit={handleRegisterSubmit} className="space-y-4">
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nome Completo</label>
-                  <input type="text" placeholder="João Silva" required value={formData.nome} onChange={(e) => setFormData({...formData, nome: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-2.5 px-5 outline-none focus:bg-white focus:border-blue-500 transition-all text-sm" />
+                  <input type="text" name="nome" placeholder="João Silva" required value={regFormData.nome} onChange={handleRegFormChange} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-2.5 px-5 outline-none focus:bg-white focus:border-blue-500 transition-all text-sm" />
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">E-mail</label>
-                  <input type="email" placeholder="seu@email.com" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-2.5 px-5 outline-none focus:bg-white focus:border-blue-500 transition-all text-sm" />
+                  <input type="email" name="email" placeholder="seu@email.com" required value={regFormData.email} onChange={handleRegFormChange} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-2.5 px-5 outline-none focus:bg-white focus:border-blue-500 transition-all text-sm" />
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Senha</label>
-                  <input type="password" placeholder="••••••••" required value={formData.senha} onChange={(e) => setFormData({...formData, senha: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-2.5 px-5 outline-none focus:bg-white focus:border-blue-500 transition-all text-sm" />
+                  <input type="password" name="senha" placeholder="••••••••" required value={regFormData.senha} onChange={handleRegFormChange} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-2.5 px-5 outline-none focus:bg-white focus:border-blue-500 transition-all text-sm" />
                 </div>
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-md mt-4 cursor-pointer text-sm">Criar Conta</button>
+                <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-md mt-4 cursor-pointer text-sm disabled:opacity-50">
+                  {loading ? 'Criando conta...' : 'Criar Conta'}
+                </button>
               </form>
             )}
 
-            {/* Google Login */}
             <div className="mt-8">
               <div className="relative flex items-center justify-center mb-6">
                 <div className="w-full border-t border-slate-100"></div>
