@@ -1,4 +1,7 @@
-const API_BASE_URL = 'http://localhost:8080/api';
+// Determina a URL base da API com base no ambiente (desenvolvimento ou produção)
+const API_BASE_URL = import.meta.env.MODE === 'production'
+  ? import.meta.env.VITE_API_BASE_URL
+  : 'http://localhost:8080/api';
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('jwt_token');
