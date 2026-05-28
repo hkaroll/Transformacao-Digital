@@ -1,72 +1,48 @@
-// Determina a URL base da API com base no ambiente (desenvolvimento ou produção)
-const API_BASE_URL = import.meta.env.MODE === 'production'
-  ? import.meta.env.VITE_API_BASE_URL
-  : 'http://localhost:8080/api';
+// ========================================================
+// FUNÇÕES SIMULADAS PARA TESTAR O LAYOUT SEM O BACKEND ONLINE
+// ========================================================
 
-const getAuthHeaders = () => {
-    const token = localStorage.getItem('jwt_token');
-    if (!token) return {};
-    return { 'Authorization': `Bearer ${token}` };
+export const login = async (email) => {
+    localStorage.setItem('jwt_token', 'token_falso_para_teste_de_layout');
+    return { nome: "Karoll Reis", email: email, cargo: "Desenvolvedora Front-End" };
 };
 
-const handleResponse = async (response) => {
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'Ocorreu um erro no servidor.' }));
-        throw new Error(errorData.message || errorData.error || 'Erro desconhecido');
-    }
-    return response.json();
-};
-
-export const login = async (email, senha) => {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha }),
-    });
-    return handleResponse(response);
-};
-
-export const register = async (userData) => {
-    const response = await fetch(`${API_BASE_URL}/usuarios`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData),
-    });
-    return handleResponse(response);
+export const register = async () => {
+    localStorage.setItem('jwt_token', 'token_falso_para_teste_de_layout');
+    return { success: true, message: "Usuário cadastrado com sucesso!" };
 };
 
 export const getUsuarioLogado = async () => {
-    const response = await fetch(`${API_BASE_URL}/usuarios/me`, {
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-    });
-    return handleResponse(response);
+    return { 
+        nome: "Karoll Reis", 
+        email: "karoll@gmail.com", 
+        cargo: "Desenvolvedora Front-End", 
+        localizacao: "Fortaleza, CE",
+        sobre: "Desenvolvedora front-end com experiência em React e Tailwind CSS.",
+        habilidades: ["React", "Tailwind CSS", "JavaScript", "Git"] 
+    };
 };
 
 export const getEmpresas = async () => {
-    const response = await fetch(`${API_BASE_URL}/empresas`, {
-        headers: { 'Content-Type': 'application/json' },
-    });
-    return handleResponse(response);
+    return [
+        { id: 1, name: "Tech Ceará", sector: "Tecnologia" },
+        { id: 2, name: "Inovação Digital", sector: "Software" }
+    ];
 };
 
 export const getVagas = async () => {
-    const response = await fetch(`${API_BASE_URL}/vagas`, {
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-    });
-    return handleResponse(response);
+    return [
+        { id: 1, title: "Estágio Front-End", company: "Tech Ceará", location: "Fortaleza, CE", sal: "R$ 1.500", type: "Estágio" },
+        { id: 2, title: "Desenvolvedor React Júnior", company: "Inovação Digital", location: "Remoto", sal: "R$ 3.000", type: "Efetivo" }
+    ];
 };
 
 export const getVagasCompativeis = async () => {
-    const response = await fetch(`${API_BASE_URL}/vagas/match`, {
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-    });
-    return handleResponse(response);
+    return [
+        { id: 1, title: "Estágio Front-End", company: "Tech Ceará", location: "Fortaleza, CE", sal: "R$ 1.500", type: "Estágio" }
+    ];
 };
 
-export const seCandidatar = async (vagaId) => {
-    const response = await fetch(`${API_BASE_URL}/vagas/${vagaId}/candidatar-se`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-    });
-    return handleResponse(response);
+export const seCandidatar = async () => {
+    return { success: true, message: "Candidatura registrada com sucesso!" };
 };
